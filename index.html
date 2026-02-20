@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAE+ | Gestor António Bernardo Muianga</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="no-print">
+    <div><strong>DAE+</strong> | Prof. António Bernardo Muianga</div>
+    <div>
+        <button class="btn btn-chat" onclick="openChat()">💬 ACTIVAR DAE+</button>
+        <button class="btn btn-drive" onclick="window.open('https://drive.google.com/drive/folders/1LW8Oq7GGxhnTQqX2VLiCp6o5LlyiKo8j', '_blank')">[☁️] Drive</button>
+        <button class="btn btn-save" onclick="window.print()">[🖨️] Imprimir</button>
+    </div>
+</div>
+
+<div class="tabs">
+    <button id="btn1" class="tab-btn active" onclick="showPage(1)">Estrutura Manual</button>
+    <button id="btn2" class="tab-btn" onclick="showPage(2)">Plano Automático</button>
+    <button id="btn3" class="tab-btn" onclick="showPage(3)">Plano Quinzenal</button>
+    <button id="btn4" class="tab-btn" onclick="showPage(4)">Actas</button>
+    <button id="btn5" class="tab-btn" onclick="showPage(5)">Plano de Actividades</button>
+</div>
+
+<div class="page">
+    <div id="visto-pedagogico" class="visto-box">
+        <div>Visto Pedagógico</div>
+        <br><br>
+        <small>Data: ____/____/2026</small>
+    </div>
+
+    <div id="school-header" class="header-doc">
+        <h2 contenteditable="true">Escola Primária de Djabula</h2>
+        
+        <div id="dynamic-info" class="info-grid">
+            <div contenteditable="true"><strong>Professor:</strong> ANTÓNIO BERNARDO MUIANGA</div>
+            <div contenteditable="true"><strong>Disciplina:</strong> Matemática</div>
+            <div contenteditable="true"><strong>Classe:</strong> 7ª Classe</div>
+            <div contenteditable="true"><strong>Data:</strong> ___/___/2026</div>
+            <div contenteditable="true"><strong>Duração:</strong> 90 Minutos</div>
+            <div contenteditable="true"><strong>Lição nº:</strong> ____</div>
+            <div contenteditable="true"><strong>M. Leccionação:</strong> ____________</div>
+            <div contenteditable="true"><strong>M. Abordagem:</strong> ____________</div>
+            <div contenteditable="true"><strong>Meios de Ensino:</strong> ____________</div>
+            <div contenteditable="true" class="full-width"><strong>Unidade Temática:</strong> ___________________________________</div>
+            <div contenteditable="true" class="full-width"><strong>Tema:</strong> </div>
+            <div class="full-width"><strong>Objectivos:</strong> <ul contenteditable="true" style="margin:0; padding-left:20px;"><li> </li></ul></div>
+        </div>
+
+        <div id="quinzenal-header" class="header-quinzenal" style="display:none;">
+            <div contenteditable="true">Plano Quinzenal de Matemática</div>
+            <div contenteditable="true">Classe: 7ª</div>
+            <div contenteditable="true">III Trimestre</div>
+            <div contenteditable="true">Ano: 2026</div>
+        </div>
+    </div>
+
+    <div id="p5-header" style="display:none; text-align: center; margin-bottom: 20px;">
+        <p>República de Moçambique Província de Maputo</p>
+        <p>Governo do Distrito de Matutuíne</p>
+        <p>Serviço Distrital de Educação Juventude e Tecnologia de Matutuíne</p>
+        <p><strong>Escola Primária de Djabula</strong></p>
+        <p><strong>Plano de actividades do Director Adjunto da Escola, ____/____/ a ____/____/</strong></p>
+    </div>
+
+    <div id="page1" class="tab-content">
+        <div id="editable-body" contenteditable="true">
+            <table id="table-manual">
+                <tr class="bg-grey"><td rowspan="2" width="10%">Tempo</td><td rowspan="2" width="15%">Funções</td><td rowspan="2">Conteúdo</td><td colspan="2">Actividade</td><td rowspan="2" width="12%">Técnica</td><td rowspan="2" width="10%">Meios</td></tr>
+                <tr class="bg-grey"><td>Professor</td><td>Aluno</td></tr>
+                <tr><td align="center">...</td><td><strong>M/A</strong></td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+            </table>
+        </div>
+        <div id="theory-section-p1"></div>
+        <div class="btn-action">
+            <button class="btn btn-action-grey" onclick="addRow('table-manual', 7)">+ Linha</button>
+            <button class="btn btn-action-grey" onclick="removeRow('table-manual')">- Linha</button>
+            <button class="btn btn-action-grey" onclick="addTheory('theory-section-p1')">+ Quadro Teórico</button>
+            <button class="btn btn-danger" onclick="clearArea('editable-body', 'theory-section-p1')">🗑️ Limpar</button>
+        </div>
+    </div>
+
+    <div id="page2" class="tab-content" style="display:none;">
+        <div id="free-canvas" contenteditable="true" style="min-height: 400px; border: 1px dashed #ccc; padding: 10px;">
+            <p style="color: gray; text-align: center; margin-top: 50px;">[Cole aqui o plano do chat...]</p>
+        </div>
+        <div id="theory-section-p2"></div>
+        <div class="btn-action">
+            <button class="btn btn-action-grey" onclick="addTheory('theory-section-p2')">+ Quadro Teórico</button>
+            <button class="btn btn-danger" onclick="clearArea('free-canvas', 'theory-section-p2')">🗑️ Limpar</button>
+        </div>
+    </div>
+
+    <div id="page3" class="tab-content" style="display:none;">
+        <div id="quinzenal-body" contenteditable="true">
+            <table id="table-quinzenal">
+                <tr class="bg-grey">
+                    <th width="12%">Unidade</th><th width="10%">Semana</th><th width="15%">Objectivos</th><th width="20%">Conteúdos</th><th width="15%">Competências</th><th width="15%">Metodologia</th><th width="10%">Material</th><th width="5%">Aulas</th>
+                </tr>
+                <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+            </table>
+        </div>
+        <div id="theory-section-p3"></div>
+        <div class="btn-action">
+            <button class="btn btn-action-grey" onclick="addRow('table-quinzenal', 8)">+ Linha</button>
+            <button class="btn btn-action-grey" onclick="removeRow('table-quinzenal')">- Linha</button>
+            <button class="btn btn-action-grey" onclick="addTheory('theory-section-p3')">+ Quadro Teórico</button>
+            <button class="btn btn-danger" onclick="clearArea('quinzenal-body', 'theory-section-p3')">🗑️ Limpar</button>
+        </div>
+    </div>
+
+    <div id="page4" class="tab-content style-acta" style="display:none;">
+        <div class="acta-content" contenteditable="true" style="text-align: justify; line-height: 1.6;">
+            <p style="text-align: center;"><strong>ACTA NÚMERO: ____/2026</strong></p>
+            <p>Aos ____ dias do mês de ___________ de 2026, reuniu-se na Escola Primária de Djabula, a equipa de ____________________, sob a presidência de ___________________________________, para tratar da seguinte ordem de trabalhos:</p>
+            <ol class="acta-agenda"><li>Abertura da sessão;</li><li>Leitura da acta anterior;</li><li>...</li></ol>
+            <p><strong>Desenvolvimento:</strong> ____________________________________________________________________________________________________________________________________________________</p>
+            <p>Nada mais havendo a tratar, deu-se por encerrada a sessão, da qual se lavrou a presente acta que vai ser assinada por quem de direito.</p>
+        </div>
+    </div>
+
+    <div id="page5" class="tab-content" style="display:none;">
+        <div id="activities-body" contenteditable="true">
+            <table id="table-activities">
+                <tr class="bg-grey">
+                    <th width="5%">Nº</th><th width="20%">Objectivos</th><th width="35%">Actividades</th><th width="10%">Prazos</th><th width="15%">Responsáveis</th><th width="15%">Obs.</th>
+                </tr>
+                <tr><td>01</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+            </table>
+        </div>
+        <div class="btn-action">
+            <button class="btn btn-action-grey" onclick="addRow('table-activities', 6)">+ Linha</button>
+            <button class="btn btn-action-grey" onclick="removeRow('table-activities')">- Linha</button>
+            <button class="btn btn-danger" onclick="clearArea('activities-body')">🗑️ Limpar</button>
+        </div>
+        <div class="footer-signature">
+            <p>O Director da Escola</p><br><br>
+            <p>__________________________</p>
+            <p>Valdemiro A. Milice</p>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
