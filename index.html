@@ -148,7 +148,7 @@
 </div>
 
 <script>
-    // --- DADOS DO FIREBASE INTEGRADOS POR DAE+ ---
+  // --- DADOS DO FIREBASE (MANTIDOS) ---
     const firebaseConfig = {
       apiKey: "AIzaSyDIoJTP1KjoSSPdKLWP-9pOppg8ldo1AaI",
       authDomain: "dae-plus.firebaseapp.com",
@@ -161,26 +161,44 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // --- LISTA DE ACESSO AUTORIZADO ---
+    // --- LISTA DE ACESSO ---
     const emailsAutorizados = [
         "antoniobernardokt@gmail.com"
     ];
 
+    // FUNÇÃO DE LOGIN POR REDIRECIONAMENTO
     function login() {
         const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider).then((result) => {
-            if(emailsAutorizados.includes(result.user.email)) {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('main-content').style.display = 'block';
-            } else {
-                document.getElementById('error-msg').style.display = 'block';
-                auth.signOut();
-            }
-        }).catch(() => { alert("Erro ao fazer login!"); });
+        auth.signInWithRedirect(provider);
     }
 
-    function logout() { auth.signOut().then(() => location.reload()); }
+    // VERIFICAÇÃO AUTOMÁTICA APÓS O REDIRECIONAMENTO
+    auth.getRedirectResult().then((result) => {
+        // Se já houver um utilizador logado ou acabou de chegar do redirect
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                if (emailsAutorizados.includes(user.email)) {
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('main-content').style.display = 'block';
+                } else {
+                    document.getElementById('error-msg').innerText = "E-mail (" + user.email + ") não autorizado!";
+                    document.getElementById('error-msg').style.display = 'block';
+                    auth.signOut();
+                }
+            }
+        });
+    }).catch((error) => {
+        console.error("Erro no login:", error);
+        alert("Erro de autenticação. Verifique se autorizou o domínio no Firebase.");
+    });
 
+    function logout() { 
+        auth.signOut().then(() => {
+            location.reload();
+        }); 
+    }
+
+    // --- FUNÇÕES DE NAVEGAÇÃO E TABELAS ---
     function showPage(num) {
         document.querySelectorAll('.tab-content').forEach(p => p.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -191,7 +209,10 @@
     function addRow(tableId, cols) {
         const table = document.getElementById(tableId);
         const row = table.insertRow();
-        for(let i=0; i<cols; i++) { row.insertCell(i).contentEditable = "true"; row.cells[i].innerText = "..."; }
+        for(let i=0; i<cols; i++) { 
+            row.insertCell(i).contentEditable = "true"; 
+            row.cells[i].innerText = "..."; 
+        }
     }
 
     function clearAreaColar(id) {
@@ -201,9 +222,10 @@
     }
 
     function openChat() {
-        alert("Comando copiado! Abra o chat e cole.");
+        alert("Comando DAE+ copiado!");
         window.open('https://gemini.google.com/app', '_blank');
     }
 </script>
 </body>
 </html>
+
