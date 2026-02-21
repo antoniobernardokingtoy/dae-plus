@@ -148,7 +148,7 @@
 </div>
 
 <script>
-  // --- DADOS DO FIREBASE (MANTIDOS) ---
+    // --- DADOS DO FIREBASE ---
     const firebaseConfig = {
       apiKey: "AIzaSyDIoJTP1KjoSSPdKLWP-9pOppg8ldo1AaI",
       authDomain: "dae-plus.firebaseapp.com",
@@ -161,44 +161,45 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // --- LISTA DE ACESSO ---
     const emailsAutorizados = [
         "antoniobernardokt@gmail.com"
     ];
 
-    // FUNÇÃO DE LOGIN POR REDIRECIONAMENTO
+    // 1. MONITOR DE ESTADO (ESSENCIAL)
+    // Esta função verifica se você já logou sempre que a página carrega
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            if (emailsAutorizados.includes(user.email)) {
+                // Se o e-mail estiver na lista, mostra o site
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            } else {
+                // Se logou com e-mail errado, avisa e expulsa
+                alert("E-mail " + user.email + " não autorizado!");
+                auth.signOut();
+            }
+        } else {
+            // Se não houver ninguém logado, garante que a tela de login aparece
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('main-content').style.display = 'none';
+        }
+    });
+
+    // 2. FUNÇÃO DE CLIQUE NO BOTÃO
     function login() {
         const provider = new firebase.auth.GoogleAuthProvider();
+        // Usar Redirect é melhor para mobile
         auth.signInWithRedirect(provider);
     }
 
-    // VERIFICAÇÃO AUTOMÁTICA APÓS O REDIRECIONAMENTO
-    auth.getRedirectResult().then((result) => {
-        // Se já houver um utilizador logado ou acabou de chegar do redirect
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                if (emailsAutorizados.includes(user.email)) {
-                    document.getElementById('login-screen').style.display = 'none';
-                    document.getElementById('main-content').style.display = 'block';
-                } else {
-                    document.getElementById('error-msg').innerText = "E-mail (" + user.email + ") não autorizado!";
-                    document.getElementById('error-msg').style.display = 'block';
-                    auth.signOut();
-                }
-            }
-        });
-    }).catch((error) => {
-        console.error("Erro no login:", error);
-        alert("Erro de autenticação. Verifique se autorizou o domínio no Firebase.");
-    });
-
+    // 3. LOGOUT
     function logout() { 
         auth.signOut().then(() => {
             location.reload();
         }); 
     }
 
-    // --- FUNÇÕES DE NAVEGAÇÃO E TABELAS ---
+    // --- FUNÇÕES DE NAVEGAÇÃO E TABELAS (MANTIDAS) ---
     function showPage(num) {
         document.querySelectorAll('.tab-content').forEach(p => p.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -225,7 +226,8 @@
         alert("Comando DAE+ copiado!");
         window.open('https://gemini.google.com/app', '_blank');
     }
-</script>
+  </script>
 </body>
 </html>
+
 
