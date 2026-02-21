@@ -4,146 +4,206 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DAE+ | Gestor António Bernardo Muianga</title>
-    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+    <style>
+        /* --- ESTILOS DE LOGIN --- */
+        #login-screen { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #1a237e; display: flex; align-items: center; justify-content: center; 
+            z-index: 9999; color: white; font-family: 'Times New Roman', serif;
+        }
+        .login-card { 
+            background: white; padding: 40px; border-radius: 15px; 
+            color: #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            width: 350px; text-align: center; 
+        }
+        .btn-google { 
+            background: #4285F4; color: white; border: none; padding: 15px; 
+            border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; 
+            font-size: 11pt; margin-top: 20px;
+        }
+        #main-content { display: none; }
+
+        /* --- ESTILOS GERAIS DAE+ --- */
+        * { font-family: 'Times New Roman', Times, serif !important; font-size: 10pt !important; }
+        body { background: #f0f2f5; margin: 0; padding: 20px; color: #000; }
+        
+        .no-print { 
+            background: #1a237e; color: white; padding: 12px; border-radius: 8px; 
+            margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; 
+        }
+        
+        .page { 
+            background: white; padding: 40px; min-height: 1100px; box-shadow: 0 0 15px rgba(0,0,0,0.1); 
+            margin: auto; max-width: 950px; position: relative; 
+        }
+        
+        .tabs { margin: 0 auto 5px auto; max-width: 950px; display: flex; gap: 2px; }
+        .tab-btn { 
+            padding: 8px 10px; cursor: pointer; border: none; background: #cbd5e0; 
+            font-weight: bold; border-radius: 5px 5px 0 0; flex-grow: 1; 
+        }
+        .tab-btn.active { background: white; color: #1a237e; border: 1px solid #ccc; border-bottom: none; }
+        
+        .header-doc { text-align: center; border-bottom: 2px solid #000; margin-bottom: 15px; padding-bottom: 10px; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; text-align: left; }
+        .full-width { grid-column: 1 / span 3; border-top: 1px solid #eee; padding-top: 5px; }
+        
+        .visto-box { 
+            position: absolute; top: 0; right: 0; border: 1px solid #000; 
+            width: 160px; padding: 5px; text-align: center; background: #fff; 
+        }
+
+        table { width: 100% !important; border-collapse: collapse !important; margin-top: 10px !important; table-layout: fixed; }
+        td, th { border: 1px solid #000 !important; padding: 5px !important; vertical-align: top !important; word-wrap: break-word; }
+        .bg-grey { background: #f2f2f2; font-weight: bold; text-align: center; }
+
+        .btn { padding: 8px 14px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; margin-top: 10px; }
+        .btn-danger { background: #c62828; }
+        .btn-action-grey { background: #666; }
+
+        [contenteditable="true"]:hover { background: #fffde7; outline: none; }
+
+        @media print { 
+            .no-print, .tabs, .btn, .btn-danger, .btn-action-grey { display: none !important; } 
+            .page { box-shadow: none; padding: 0; margin: 0; }
+        }
+    </style>
 </head>
 <body>
 
-<div class="no-print">
-    <div><strong>DAE+</strong> | Prof. António Bernardo Muianga</div>
-    <div>
-        <button class="btn btn-chat" onclick="openChat()">💬 ACTIVAR DAE+</button>
-        <button class="btn btn-drive" onclick="window.open('https://drive.google.com/drive/folders/1LW8Oq7GGxhnTQqX2VLiCp6o5LlyiKo8j', '_blank')">[☁️] Drive</button>
-        <button class="btn btn-save" onclick="window.print()">[🖨️] Imprimir</button>
+<div id="login-screen">
+    <div class="login-card">
+        <h2 style="color: #1a237e;">DAE+ | DJABULA</h2>
+        <p>Acesso Restrito: Gestão Pedagógica</p>
+        <button class="btn-google" onclick="login()">Entrar com Google</button>
+        <p id="error-msg" style="color: red; display: none; margin-top: 15px; font-size: 9pt !important;">E-mail não autorizado!</p>
     </div>
 </div>
 
-<div class="tabs">
-    <button id="btn1" class="tab-btn active" onclick="showPage(1)">Estrutura Manual</button>
-    <button id="btn2" class="tab-btn" onclick="showPage(2)">Plano Automático</button>
-    <button id="btn3" class="tab-btn" onclick="showPage(3)">Plano Quinzenal</button>
-    <button id="btn4" class="tab-btn" onclick="showPage(4)">Actas</button>
-    <button id="btn5" class="tab-btn" onclick="showPage(5)">Plano de Actividades</button>
-</div>
-
-<div class="page">
-    <div id="visto-pedagogico" class="visto-box">
-        <div>Visto Pedagógico</div>
-        <br><br>
-        <small>Data: ____/____/2026</small>
-    </div>
-
-    <div id="school-header" class="header-doc">
-        <h2 contenteditable="true">Escola Primária de Djabula</h2>
-        
-        <div id="dynamic-info" class="info-grid">
-            <div contenteditable="true"><strong>Professor:</strong> ANTÓNIO BERNARDO MUIANGA</div>
-            <div contenteditable="true"><strong>Disciplina:</strong> Matemática</div>
-            <div contenteditable="true"><strong>Classe:</strong> 7ª Classe</div>
-            <div contenteditable="true"><strong>Data:</strong> ___/___/2026</div>
-            <div contenteditable="true"><strong>Duração:</strong> 90 Minutos</div>
-            <div contenteditable="true"><strong>Lição nº:</strong> ____</div>
-            <div contenteditable="true"><strong>M. Leccionação:</strong> ____________</div>
-            <div contenteditable="true"><strong>M. Abordagem:</strong> ____________</div>
-            <div contenteditable="true"><strong>Meios de Ensino:</strong> ____________</div>
-            <div contenteditable="true" class="full-width"><strong>Unidade Temática:</strong> ___________________________________</div>
-            <div contenteditable="true" class="full-width"><strong>Tema:</strong> </div>
-            <div class="full-width"><strong>Objectivos:</strong> <ul contenteditable="true" style="margin:0; padding-left:20px;"><li> </li></ul></div>
-        </div>
-
-        <div id="quinzenal-header" class="header-quinzenal" style="display:none;">
-            <div contenteditable="true">Plano Quinzenal de Matemática</div>
-            <div contenteditable="true">Classe: 7ª</div>
-            <div contenteditable="true">III Trimestre</div>
-            <div contenteditable="true">Ano: 2026</div>
+<div id="main-content">
+    <div class="no-print">
+        <div><strong>DAE+</strong> | Prof. António Bernardo Muianga</div>
+        <div>
+            <button class="btn" style="background: #ef6c00;" onclick="openChat()">💬 ACTIVAR DAE+</button>
+            <button class="btn" style="background: #d32f2f;" onclick="logout()">Sair</button>
         </div>
     </div>
 
-    <div id="p5-header" style="display:none; text-align: center; margin-bottom: 20px;">
-        <p>República de Moçambique Província de Maputo</p>
-        <p>Governo do Distrito de Matutuíne</p>
-        <p>Serviço Distrital de Educação Juventude e Tecnologia de Matutuíne</p>
-        <p><strong>Escola Primária de Djabula</strong></p>
-        <p><strong>Plano de actividades do Director Adjunto da Escola, ____/____/ a ____/____/</strong></p>
+    <div class="tabs">
+        <button id="btn1" class="tab-btn active" onclick="showPage(1)">Estrutura Manual</button>
+        <button id="btn3" class="tab-btn" onclick="showPage(3)">Plano Quinzenal</button>
+        <button id="btn5" class="tab-btn" onclick="showPage(5)">Plano de Actividades</button>
     </div>
 
-    <div id="page1" class="tab-content">
-        <div id="editable-body" contenteditable="true">
-            <table id="table-manual">
-                <tr class="bg-grey"><td rowspan="2" width="10%">Tempo</td><td rowspan="2" width="15%">Funções</td><td rowspan="2">Conteúdo</td><td colspan="2">Actividade</td><td rowspan="2" width="12%">Técnica</td><td rowspan="2" width="10%">Meios</td></tr>
-                <tr class="bg-grey"><td>Professor</td><td>Aluno</td></tr>
-                <tr><td align="center">...</td><td><strong>M/A</strong></td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-            </table>
+    <div class="page">
+        <div id="visto-pedagogico" class="visto-box">
+            <div style="font-weight: bold; border-bottom: 1px solid #000;">Visto Pedagógico</div>
+            <br><br><small>Data: ____/____/2026</small>
         </div>
-        <div id="theory-section-p1"></div>
-        <div class="btn-action">
-            <button class="btn btn-action-grey" onclick="addRow('table-manual', 7)">+ Linha</button>
-            <button class="btn btn-action-grey" onclick="removeRow('table-manual')">- Linha</button>
-            <button class="btn btn-action-grey" onclick="addTheory('theory-section-p1')">+ Quadro Teórico</button>
-            <button class="btn btn-danger" onclick="clearArea('editable-body', 'theory-section-p1')">🗑️ Limpar</button>
-        </div>
-    </div>
 
-    <div id="page2" class="tab-content" style="display:none;">
-        <div id="free-canvas" contenteditable="true" style="min-height: 400px; border: 1px dashed #ccc; padding: 10px;">
-            <p style="color: gray; text-align: center; margin-top: 50px;">[Cole aqui o plano do chat...]</p>
+        <div id="school-header" class="header-doc">
+            <h2 style="font-size: 12pt !important;">Escola Primária de Djabula</h2>
+            <div class="info-grid">
+                <div contenteditable="true"><strong>Professor:</strong> ANTÓNIO B. MUIANGA</div>
+                <div contenteditable="true"><strong>Disciplina:</strong> Matemática</div>
+                <div contenteditable="true"><strong>Classe:</strong> 7ª Classe</div>
+                <div contenteditable="true" class="full-width"><strong>Unidade Temática:</strong> ________________________</div>
+            </div>
         </div>
-        <div id="theory-section-p2"></div>
-        <div class="btn-action">
-            <button class="btn btn-action-grey" onclick="addTheory('theory-section-p2')">+ Quadro Teórico</button>
-            <button class="btn btn-danger" onclick="clearArea('free-canvas', 'theory-section-p2')">🗑️ Limpar</button>
-        </div>
-    </div>
 
-    <div id="page3" class="tab-content" style="display:none;">
-        <div id="quinzenal-body" contenteditable="true">
-            <table id="table-quinzenal">
-                <tr class="bg-grey">
-                    <th width="12%">Unidade</th><th width="10%">Semana</th><th width="15%">Objectivos</th><th width="20%">Conteúdos</th><th width="15%">Competências</th><th width="15%">Metodologia</th><th width="10%">Material</th><th width="5%">Aulas</th>
-                </tr>
-                <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-            </table>
+        <div id="page1" class="tab-content">
+            <div contenteditable="true">
+                <table id="table-manual">
+                    <tr class="bg-grey"><td>Tempo</td><td>Função</td><td>Conteúdo</td><td>Professor</td><td>Aluno</td></tr>
+                    <tr><td>...</td><td><strong>M/A</strong></td><td>...</td><td>...</td><td>...</td></tr>
+                </table>
+            </div>
+            <button class="btn btn-action-grey" onclick="addRow('table-manual', 5)">+ Linha</button>
         </div>
-        <div id="theory-section-p3"></div>
-        <div class="btn-action">
-            <button class="btn btn-action-grey" onclick="addRow('table-quinzenal', 8)">+ Linha</button>
-            <button class="btn btn-action-grey" onclick="removeRow('table-quinzenal')">- Linha</button>
-            <button class="btn btn-action-grey" onclick="addTheory('theory-section-p3')">+ Quadro Teórico</button>
-            <button class="btn btn-danger" onclick="clearArea('quinzenal-body', 'theory-section-p3')">🗑️ Limpar</button>
-        </div>
-    </div>
 
-    <div id="page4" class="tab-content style-acta" style="display:none;">
-        <div class="acta-content" contenteditable="true" style="text-align: justify; line-height: 1.6;">
-            <p style="text-align: center;"><strong>ACTA NÚMERO: ____/2026</strong></p>
-            <p>Aos ____ dias do mês de ___________ de 2026, reuniu-se na Escola Primária de Djabula, a equipa de ____________________, sob a presidência de ___________________________________, para tratar da seguinte ordem de trabalhos:</p>
-            <ol class="acta-agenda"><li>Abertura da sessão;</li><li>Leitura da acta anterior;</li><li>...</li></ol>
-            <p><strong>Desenvolvimento:</strong> ____________________________________________________________________________________________________________________________________________________</p>
-            <p>Nada mais havendo a tratar, deu-se por encerrada a sessão, da qual se lavrou a presente acta que vai ser assinada por quem de direito.</p>
+        <div id="page3" class="tab-content" style="display:none;">
+            <div id="quinzenal-body" contenteditable="true" style="min-height: 300px;">
+                <table id="table-quinzenal">
+                    <tr class="bg-grey"><th>Unidade</th><th>Semana</th><th>Objectivos</th><th>Conteúdos</th></tr>
+                    <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+                </table>
+            </div>
+            <button class="btn btn-danger" onclick="clearAreaColar('quinzenal-body')">🗑️ Limpar para Colar</button>
         </div>
-    </div>
 
-    <div id="page5" class="tab-content" style="display:none;">
-        <div id="activities-body" contenteditable="true">
-            <table id="table-activities">
-                <tr class="bg-grey">
-                    <th width="5%">Nº</th><th width="20%">Objectivos</th><th width="35%">Actividades</th><th width="10%">Prazos</th><th width="15%">Responsáveis</th><th width="15%">Obs.</th>
-                </tr>
-                <tr><td>01</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-            </table>
-        </div>
-        <div class="btn-action">
-            <button class="btn btn-action-grey" onclick="addRow('table-activities', 6)">+ Linha</button>
-            <button class="btn btn-action-grey" onclick="removeRow('table-activities')">- Linha</button>
-            <button class="btn btn-danger" onclick="clearArea('activities-body')">🗑️ Limpar</button>
-        </div>
-        <div class="footer-signature">
-            <p>O Director da Escola</p><br><br>
-            <p>__________________________</p>
-            <p>Valdemiro A. Milice</p>
+        <div id="page5" class="tab-content" style="display:none;">
+            <div id="activities-body" contenteditable="true" style="min-height: 300px;">
+                <table id="table-activities">
+                    <tr class="bg-grey"><th>Nº</th><th>Objectivos</th><th>Actividades</th><th>Prazos</th></tr>
+                    <tr><td>01</td><td>...</td><td>...</td><td>...</td></tr>
+                </table>
+            </div>
+            <button class="btn btn-danger" onclick="clearAreaColar('activities-body')">🗑️ Limpar para Colar</button>
         </div>
     </div>
 </div>
 
-<script src="script.js"></script>
+<script>
+    // --- DADOS DO FIREBASE INTEGRADOS POR DAE+ ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyDIoJTP1KjoSSPdKLWP-9pOppg8ldo1AaI",
+      authDomain: "dae-plus.firebaseapp.com",
+      projectId: "dae-plus",
+      storageBucket: "dae-plus.appspot.com",
+      messagingSenderId: "796900130705",
+      appId: "1:796900130705:web:afd0172c8e591c4597e430"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // --- LISTA DE ACESSO AUTORIZADO ---
+    const emailsAutorizados = [
+        "antoniobernardokt@gmail.com"
+    ];
+
+    function login() {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider).then((result) => {
+            if(emailsAutorizados.includes(result.user.email)) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            } else {
+                document.getElementById('error-msg').style.display = 'block';
+                auth.signOut();
+            }
+        }).catch(() => { alert("Erro ao fazer login!"); });
+    }
+
+    function logout() { auth.signOut().then(() => location.reload()); }
+
+    function showPage(num) {
+        document.querySelectorAll('.tab-content').forEach(p => p.style.display = 'none');
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('page' + num).style.display = 'block';
+        document.getElementById('btn' + num).classList.add('active');
+    }
+
+    function addRow(tableId, cols) {
+        const table = document.getElementById(tableId);
+        const row = table.insertRow();
+        for(let i=0; i<cols; i++) { row.insertCell(i).contentEditable = "true"; row.cells[i].innerText = "..."; }
+    }
+
+    function clearAreaColar(id) {
+        if(confirm("Deseja remover a tabela atual para colar uma nova?")) {
+            document.getElementById(id).innerHTML = '<p style="text-align:center; color:#666; padding:20px; border:1px dashed #ccc;">Área limpa. Cole sua tabela aqui (Ctrl+V)...</p>';
+        }
+    }
+
+    function openChat() {
+        alert("Comando copiado! Abra o chat e cole.");
+        window.open('https://gemini.google.com/app', '_blank');
+    }
+</script>
 </body>
 </html>
