@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DAE+ | Gestor António Bernardo Muianga</title>
+    <title>DAE+ | Gestor António B. Muianga</title>
     
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
     <style>
-        /* --- ESTILOS DE LOGIN --- */
+        /* --- ESTILOS DE LOGIN E INTERFACE --- */
         #login-screen { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: #1a237e; display: flex; align-items: center; justify-content: center; 
@@ -18,79 +18,52 @@
         .login-card { 
             background: white; padding: 40px; border-radius: 15px; 
             color: #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            width: 350px; text-align: center; 
+            width: 320px; text-align: center; 
         }
         .btn-google { 
             background: #4285F4; color: white; border: none; padding: 15px; 
             border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; 
-            font-size: 11pt; margin-top: 20px;
+            font-size: 11pt; margin-top: 20px; transition: 0.3s;
         }
+        .btn-google:hover { background: #357abd; }
         #main-content { display: none; }
 
-        /* --- ESTILOS GERAIS DAE+ --- */
+        /* --- ESTILOS PEDAGÓGICOS --- */
         * { font-family: 'Times New Roman', Times, serif !important; font-size: 10pt !important; }
         body { background: #f0f2f5; margin: 0; padding: 20px; color: #000; }
-        
-        .no-print { 
-            background: #1a237e; color: white; padding: 12px; border-radius: 8px; 
-            margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; 
-        }
-        
-        .page { 
-            background: white; padding: 40px; min-height: 1100px; box-shadow: 0 0 15px rgba(0,0,0,0.1); 
-            margin: auto; max-width: 950px; position: relative; 
-        }
-        
+        .no-print { background: #1a237e; color: white; padding: 12px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .page { background: white; padding: 40px; min-height: 1100px; box-shadow: 0 0 15px rgba(0,0,0,0.1); margin: auto; max-width: 950px; position: relative; }
         .tabs { margin: 0 auto 5px auto; max-width: 950px; display: flex; gap: 2px; }
-        .tab-btn { 
-            padding: 8px 10px; cursor: pointer; border: none; background: #cbd5e0; 
-            font-weight: bold; border-radius: 5px 5px 0 0; flex-grow: 1; 
-        }
+        .tab-btn { padding: 8px 10px; cursor: pointer; border: none; background: #cbd5e0; font-weight: bold; border-radius: 5px 5px 0 0; flex-grow: 1; }
         .tab-btn.active { background: white; color: #1a237e; border: 1px solid #ccc; border-bottom: none; }
-        
         .header-doc { text-align: center; border-bottom: 2px solid #000; margin-bottom: 15px; padding-bottom: 10px; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; text-align: left; }
         .full-width { grid-column: 1 / span 3; border-top: 1px solid #eee; padding-top: 5px; }
-        
-        .visto-box { 
-            position: absolute; top: 0; right: 0; border: 1px solid #000; 
-            width: 160px; padding: 5px; text-align: center; background: #fff; 
-        }
-
+        .visto-box { position: absolute; top: 0; right: 0; border: 1px solid #000; width: 160px; padding: 5px; text-align: center; background: #fff; }
         table { width: 100% !important; border-collapse: collapse !important; margin-top: 10px !important; table-layout: fixed; }
-        td, th { border: 1px solid #000 !important; padding: 5px !important; vertical-align: top !important; word-wrap: break-word; }
+        td, th { border: 1px solid #000 !important; padding: 5px !important; vertical-align: top !important; }
         .bg-grey { background: #f2f2f2; font-weight: bold; text-align: center; }
-
         .btn { padding: 8px 14px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; color: white; margin-top: 10px; }
         .btn-danger { background: #c62828; }
-        .btn-action-grey { background: #666; }
-
         [contenteditable="true"]:hover { background: #fffde7; outline: none; }
-
-        @media print { 
-            .no-print, .tabs, .btn, .btn-danger, .btn-action-grey { display: none !important; } 
-            .page { box-shadow: none; padding: 0; margin: 0; }
-        }
+        @media print { .no-print, .tabs, .btn, .btn-danger { display: none !important; } }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
     <div class="login-card">
-        <h2 style="color: #1a237e;">DAE+ | DJABULA</h2>
-        <p>Acesso Restrito: Gestão Pedagógica</p>
+        <h2 style="color: #1a237e; font-size: 14pt !important;">DAE+ | DJABULA</h2>
+        <p>Acesso Restrito ao Gestor</p>
         <button class="btn-google" onclick="login()">Entrar com Google</button>
-        <p id="error-msg" style="color: red; display: none; margin-top: 15px; font-size: 9pt !important;">E-mail não autorizado!</p>
+        <p id="error-msg" style="color: red; display: none; margin-top: 15px; font-size: 9pt !important;"></p>
     </div>
 </div>
 
 <div id="main-content">
     <div class="no-print">
-        <div><strong>DAE+</strong> | Prof. António Bernardo Muianga</div>
-        <div>
-            <button class="btn" style="background: #ef6c00;" onclick="openChat()">💬 ACTIVAR DAE+</button>
-            <button class="btn" style="background: #d32f2f;" onclick="logout()">Sair</button>
-        </div>
+        <div><strong>DAE+</strong> | Prof. António B. Muianga</div>
+        <button class="btn" style="background: #d32f2f;" onclick="logout()">Sair</button>
     </div>
 
     <div class="tabs">
@@ -100,47 +73,38 @@
     </div>
 
     <div class="page">
-        <div id="visto-pedagogico" class="visto-box">
+        <div class="visto-box">
             <div style="font-weight: bold; border-bottom: 1px solid #000;">Visto Pedagógico</div>
             <br><br><small>Data: ____/____/2026</small>
         </div>
 
-        <div id="school-header" class="header-doc">
+        <div class="header-doc">
             <h2 style="font-size: 12pt !important;">Escola Primária de Djabula</h2>
             <div class="info-grid">
                 <div contenteditable="true"><strong>Professor:</strong> ANTÓNIO B. MUIANGA</div>
                 <div contenteditable="true"><strong>Disciplina:</strong> Matemática</div>
                 <div contenteditable="true"><strong>Classe:</strong> 7ª Classe</div>
-                <div contenteditable="true" class="full-width"><strong>Unidade Temática:</strong> ________________________</div>
             </div>
         </div>
 
         <div id="page1" class="tab-content">
-            <div contenteditable="true">
-                <table id="table-manual">
-                    <tr class="bg-grey"><td>Tempo</td><td>Função</td><td>Conteúdo</td><td>Professor</td><td>Aluno</td></tr>
-                    <tr><td>...</td><td><strong>M/A</strong></td><td>...</td><td>...</td><td>...</td></tr>
-                </table>
-            </div>
-            <button class="btn btn-action-grey" onclick="addRow('table-manual', 5)">+ Linha</button>
+            <table id="table-manual">
+                <tr class="bg-grey"><td>Tempo</td><td>Função</td><td>Conteúdo</td><td>Professor</td><td>Aluno</td></tr>
+                <tr contenteditable="true"><td>...</td><td><strong>M/A</strong></td><td>...</td><td>...</td><td>...</td></tr>
+            </table>
+            <button class="btn" style="background: #666;" onclick="addRow('table-manual', 5)">+ Linha</button>
         </div>
 
         <div id="page3" class="tab-content" style="display:none;">
-            <div id="quinzenal-body" contenteditable="true" style="min-height: 300px;">
-                <table id="table-quinzenal">
-                    <tr class="bg-grey"><th>Unidade</th><th>Semana</th><th>Objectivos</th><th>Conteúdos</th></tr>
-                    <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-                </table>
+            <div id="quinzenal-body" contenteditable="true" style="min-height: 200px; border: 1px solid #eee; padding: 10px;">
+                <p style="color: #999;">Clique em Limpar e cole a tabela aqui...</p>
             </div>
             <button class="btn btn-danger" onclick="clearAreaColar('quinzenal-body')">🗑️ Limpar para Colar</button>
         </div>
 
         <div id="page5" class="tab-content" style="display:none;">
-            <div id="activities-body" contenteditable="true" style="min-height: 300px;">
-                <table id="table-activities">
-                    <tr class="bg-grey"><th>Nº</th><th>Objectivos</th><th>Actividades</th><th>Prazos</th></tr>
-                    <tr><td>01</td><td>...</td><td>...</td><td>...</td></tr>
-                </table>
+            <div id="activities-body" contenteditable="true" style="min-height: 200px; border: 1px solid #eee; padding: 10px;">
+                <p style="color: #999;">Clique em Limpar e cole o plano de atividades aqui...</p>
             </div>
             <button class="btn btn-danger" onclick="clearAreaColar('activities-body')">🗑️ Limpar para Colar</button>
         </div>
@@ -148,7 +112,8 @@
 </div>
 
 <script>
-  const firebaseConfig = {
+    // CONFIGURAÇÃO FIREBASE
+    const firebaseConfig = {
       apiKey: "AIzaSyDIoJTP1KjoSSPdKLWP-9pOppg8ldo1AaI",
       authDomain: "dae-plus.firebaseapp.com",
       projectId: "dae-plus",
@@ -160,22 +125,18 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // FORÇAR PERSISTÊNCIA LOCAL (Isso impede que ele esqueça o login ao voltar)
-    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    // LISTA DE ACESSO
+    const emailsAutorizados = ["antoniobernardokt@gmail.com"];
 
-    const emailsAutorizados = [
-        "antoniobernardokt@gmail.com"
-    ];
-
-    // Monitoramento Reforçado
+    // MONITOR DE SESSÃO
     auth.onAuthStateChanged((user) => {
         if (user) {
-            console.log("Usuário detectado:", user.email);
             if (emailsAutorizados.includes(user.email)) {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
             } else {
-                alert("E-mail não autorizado: " + user.email);
+                document.getElementById('error-msg').innerText = "E-mail não autorizado!";
+                document.getElementById('error-msg').style.display = 'block';
                 auth.signOut();
             }
         } else {
@@ -184,40 +145,36 @@
         }
     });
 
-    // Função de Login simplificada para garantir o redirecionamento
     function login() {
         const provider = new firebase.auth.GoogleAuthProvider();
-        // Forçar a seleção de conta para garantir que o Google envie os dados novos
         provider.setCustomParameters({ prompt: 'select_account' });
-        auth.signInWithRedirect(provider);
+        // Forçar persistência local antes do redirect
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
+            return auth.signInWithRedirect(provider);
+        });
     }
 
-    function logout() { 
-        auth.signOut().then(() => { location.reload(); }); 
-    }
+    function logout() { auth.signOut().then(() => location.reload()); }
 
-    // Funções de Tabela (Não altere nada aqui)
+    // UTILITÁRIOS
     function showPage(num) {
         document.querySelectorAll('.tab-content').forEach(p => p.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('page' + num).style.display = 'block';
         document.getElementById('btn' + num).classList.add('active');
     }
+
     function addRow(tableId, cols) {
         const table = document.getElementById(tableId);
         const row = table.insertRow();
         for(let i=0; i<cols; i++) { row.insertCell(i).contentEditable = "true"; row.cells[i].innerText = "..."; }
     }
+
     function clearAreaColar(id) {
-        if(confirm("Deseja limpar para colar?")) {
-            document.getElementById(id).innerHTML = '<p style="text-align:center; color:#666; padding:20px; border:1px dashed #ccc;">Pronto para colar...</p>';
+        if(confirm("Deseja limpar o campo para colar novos dados?")) {
+            document.getElementById(id).innerHTML = '<p style="text-align:center; color:#666;">Pronto para colar (Ctrl+V)...</p>';
         }
     }
-  </script>
+</script>
 </body>
 </html>
-
-
-
-
-
