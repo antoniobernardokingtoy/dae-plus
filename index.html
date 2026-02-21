@@ -148,8 +148,7 @@
 </div>
 
 <script>
-   // --- DADOS DO FIREBASE ---
-    const firebaseConfig = {
+  const firebaseConfig = {
       apiKey: "AIzaSyDIoJTP1KjoSSPdKLWP-9pOppg8ldo1AaI",
       authDomain: "dae-plus.firebaseapp.com",
       projectId: "dae-plus",
@@ -161,74 +160,63 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
+    // FORÇAR PERSISTÊNCIA LOCAL (Isso impede que ele esqueça o login ao voltar)
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
     const emailsAutorizados = [
         "antoniobernardokt@gmail.com"
     ];
 
-    // 1. MONITOR DE ESTADO (ESSENCIAL)
-    // Esta função verifica se você já logou sempre que a página carrega
+    // Monitoramento Reforçado
     auth.onAuthStateChanged((user) => {
         if (user) {
+            console.log("Usuário detectado:", user.email);
             if (emailsAutorizados.includes(user.email)) {
-                // Se o e-mail estiver na lista, mostra o site
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
             } else {
-                // Se logou com e-mail errado, avisa e expulsa
-                alert("E-mail " + user.email + " não autorizado!");
+                alert("E-mail não autorizado: " + user.email);
                 auth.signOut();
             }
         } else {
-            // Se não houver ninguém logado, garante que a tela de login aparece
             document.getElementById('login-screen').style.display = 'flex';
             document.getElementById('main-content').style.display = 'none';
         }
     });
 
-    // 2. FUNÇÃO DE CLIQUE NO BOTÃO
+    // Função de Login simplificada para garantir o redirecionamento
     function login() {
         const provider = new firebase.auth.GoogleAuthProvider();
-        // Usar Redirect é melhor para mobile
+        // Forçar a seleção de conta para garantir que o Google envie os dados novos
+        provider.setCustomParameters({ prompt: 'select_account' });
         auth.signInWithRedirect(provider);
     }
 
-    // 3. LOGOUT
     function logout() { 
-        auth.signOut().then(() => {
-            location.reload();
-        }); 
+        auth.signOut().then(() => { location.reload(); }); 
     }
 
-    // --- FUNÇÕES DE NAVEGAÇÃO E TABELAS (MANTIDAS) ---
+    // Funções de Tabela (Não altere nada aqui)
     function showPage(num) {
         document.querySelectorAll('.tab-content').forEach(p => p.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('page' + num).style.display = 'block';
         document.getElementById('btn' + num).classList.add('active');
     }
-
     function addRow(tableId, cols) {
         const table = document.getElementById(tableId);
         const row = table.insertRow();
-        for(let i=0; i<cols; i++) { 
-            row.insertCell(i).contentEditable = "true"; 
-            row.cells[i].innerText = "..."; 
-        }
+        for(let i=0; i<cols; i++) { row.insertCell(i).contentEditable = "true"; row.cells[i].innerText = "..."; }
     }
-
     function clearAreaColar(id) {
-        if(confirm("Deseja remover a tabela atual para colar uma nova?")) {
-            document.getElementById(id).innerHTML = '<p style="text-align:center; color:#666; padding:20px; border:1px dashed #ccc;">Área limpa. Cole sua tabela aqui (Ctrl+V)...</p>';
+        if(confirm("Deseja limpar para colar?")) {
+            document.getElementById(id).innerHTML = '<p style="text-align:center; color:#666; padding:20px; border:1px dashed #ccc;">Pronto para colar...</p>';
         }
-    }
-
-    function openChat() {
-        alert("Comando DAE+ copiado!");
-        window.open('https://gemini.google.com/app', '_blank');
     }
   </script>
 </body>
 </html>
+
 
 
 
